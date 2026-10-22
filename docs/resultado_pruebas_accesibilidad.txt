@@ -1,0 +1,26 @@
+Pruebas de accesibilidad de MediCita (21/10/2026)
+=================================================
+
+1. Revisión automática con axe-core 4.10 (reglas WCAG 2.0 A/AA, WCAG 2.1 A/AA y buenas prácticas)
+   Pantallas revisadas: inicio de sesión, registro, reservar (pasos 1 y 2), mis citas,
+   citas del día, agendar cita, agenda del médico, especialidades, médicos, horarios
+   y resumen mensual. También con alto contraste y letra grande activados.
+   Antes de los cambios: 17 reglas con fallas (contraste insuficiente, campos sin etiqueta,
+   encabezados de tabla vacíos y orden de títulos).
+   Después de los cambios: 0 fallas.
+
+2. Uso solo con teclado (sin mouse)
+   - Iniciar sesión con Tab y Enter: correcto.
+   - Al cambiar de pantalla, el foco va al título principal y la pestaña del navegador cambia de nombre.
+   - Reservar una cita completa con Tab y Enter: correcto. En cada paso el foco va al
+     título del paso ("Paso 2 de 3: Elige la fecha y la hora").
+   - Al reservar, el lector de pantalla anuncia: "Cita reservada para el Lunes, 26 de octubre
+     de 2026 a las 10:00 con Luis Cedeño."
+   - Ventana de cancelar: Tab se queda dentro de la ventana, Escape la cierra y el foco vuelve
+     al botón "Cancelar" que la abrió.
+
+3. Lectores de pantalla (pendiente de probar por el equipo)
+   - Windows: NVDA (gratis, nvaccess.org) con Chrome o Firefox.
+   - Celular: TalkBack (Android) o VoiceOver (iPhone).
+   Qué revisar: que se lean los horarios como "08:20, libre" u "08:40, ocupado",
+   los mensajes de error y de éxito, y el aviso de que la sesión se cerrará.

@@ -1,0 +1,100 @@
+
+1. Acceso por URL según el rol (RF02, RNF01)
+  ✔ ninguno       GET    /citas → bloqueado (401)
+  ✔ paciente      GET    /citas → bloqueado (403)
+  ✔ medico        GET    /citas → bloqueado (403)
+  ✔ ninguno       GET    /citas/mias → bloqueado (401)
+  ✔ recepcionista GET    /citas/mias → bloqueado (403)
+  ✔ medico        GET    /citas/mias → bloqueado (403)
+  ✔ administrador GET    /citas/mias → bloqueado (403)
+  ✔ ninguno       GET    /pacientes?buscar=13 → bloqueado (401)
+  ✔ paciente      GET    /pacientes?buscar=13 → bloqueado (403)
+  ✔ medico        GET    /pacientes?buscar=13 → bloqueado (403)
+  ✔ administrador GET    /pacientes?buscar=13 → bloqueado (403)
+  ✔ ninguno       POST   /pacientes → bloqueado (401)
+  ✔ paciente      POST   /pacientes → bloqueado (403)
+  ✔ medico        POST   /pacientes → bloqueado (403)
+  ✔ administrador POST   /pacientes → bloqueado (403)
+  ✔ ninguno       GET    /agenda → bloqueado (401)
+  ✔ paciente      GET    /agenda → bloqueado (403)
+  ✔ recepcionista GET    /agenda → bloqueado (403)
+  ✔ administrador GET    /agenda → bloqueado (403)
+  ✔ ninguno       GET    /reportes/mensual → bloqueado (401)
+  ✔ paciente      GET    /reportes/mensual → bloqueado (403)
+  ✔ recepcionista GET    /reportes/mensual → bloqueado (403)
+  ✔ medico        GET    /reportes/mensual → bloqueado (403)
+  ✔ ninguno       GET    /recordatorios → bloqueado (401)
+  ✔ paciente      GET    /recordatorios → bloqueado (403)
+  ✔ recepcionista GET    /recordatorios → bloqueado (403)
+  ✔ medico        GET    /recordatorios → bloqueado (403)
+  ✔ ninguno       POST   /recordatorios/enviar → bloqueado (401)
+  ✔ paciente      POST   /recordatorios/enviar → bloqueado (403)
+  ✔ recepcionista POST   /recordatorios/enviar → bloqueado (403)
+  ✔ medico        POST   /recordatorios/enviar → bloqueado (403)
+  ✔ ninguno       GET    /medicos/admin → bloqueado (401)
+  ✔ paciente      GET    /medicos/admin → bloqueado (403)
+  ✔ recepcionista GET    /medicos/admin → bloqueado (403)
+  ✔ medico        GET    /medicos/admin → bloqueado (403)
+  ✔ ninguno       POST   /especialidades → bloqueado (401)
+  ✔ paciente      POST   /especialidades → bloqueado (403)
+  ✔ recepcionista POST   /especialidades → bloqueado (403)
+  ✔ medico        POST   /especialidades → bloqueado (403)
+  ✔ ninguno       PUT    /especialidades/1 → bloqueado (401)
+  ✔ paciente      PUT    /especialidades/1 → bloqueado (403)
+  ✔ recepcionista PUT    /especialidades/1 → bloqueado (403)
+  ✔ medico        PUT    /especialidades/1 → bloqueado (403)
+  ✔ ninguno       POST   /medicos → bloqueado (401)
+  ✔ paciente      POST   /medicos → bloqueado (403)
+  ✔ recepcionista POST   /medicos → bloqueado (403)
+  ✔ medico        POST   /medicos → bloqueado (403)
+  ✔ ninguno       PUT    /medicos/1 → bloqueado (401)
+  ✔ paciente      PUT    /medicos/1 → bloqueado (403)
+  ✔ recepcionista PUT    /medicos/1 → bloqueado (403)
+  ✔ medico        PUT    /medicos/1 → bloqueado (403)
+  ✔ ninguno       POST   /horarios → bloqueado (401)
+  ✔ paciente      POST   /horarios → bloqueado (403)
+  ✔ recepcionista POST   /horarios → bloqueado (403)
+  ✔ medico        POST   /horarios → bloqueado (403)
+  ✔ ninguno       DELETE /horarios/999999 → bloqueado (401)
+  ✔ paciente      DELETE /horarios/999999 → bloqueado (403)
+  ✔ recepcionista DELETE /horarios/999999 → bloqueado (403)
+  ✔ medico        DELETE /horarios/999999 → bloqueado (403)
+  ✔ ninguno       PATCH  /citas/1/reprogramar → bloqueado (401)
+  ✔ paciente      PATCH  /citas/1/reprogramar → bloqueado (403)
+  ✔ medico        PATCH  /citas/1/reprogramar → bloqueado (403)
+  ✔ administrador PATCH  /citas/1/reprogramar → bloqueado (403)
+  ✔ ninguno       POST   /citas/1/atencion → bloqueado (401)
+  ✔ paciente      POST   /citas/1/atencion → bloqueado (403)
+  ✔ recepcionista POST   /citas/1/atencion → bloqueado (403)
+  ✔ administrador POST   /citas/1/atencion → bloqueado (403)
+  ✔ ninguno       POST   /citas → bloqueado (401)
+  ✔ medico        POST   /citas → bloqueado (403)
+  ✔ administrador POST   /citas → bloqueado (403)
+
+2. Datos de otros usuarios (RNF01)
+  ✔ Paciente no puede ver la cita de otro paciente
+  ✔ Paciente no puede ver el historial de la cita de otro
+  ✔ Paciente no puede cancelar la cita de otro
+  ✔ Médico no puede ver citas de otro médico
+  ✔ Médico no puede registrar la atención de otro médico
+  ✔ "Mis citas" solo trae las citas del paciente que inició sesión
+  ✔ La lista pública de médicos no muestra correos
+
+3. Token alterado o falso (RNF02)
+  ✔ Cambiar el rol dentro del token a "administrador" no da acceso
+  ✔ Token sin firma (alg "none") es rechazado
+  ✔ Token inventado es rechazado
+
+4. Inyección SQL
+  ✔ Login con "' OR '1'='1" no entra
+  ✔ Login con "' OR 1=1 --" no entra
+  ✔ Login con "'; DROP TABLE citas; --" no entra
+  ✔ Login con "1 OR 1=1" no entra
+  ✔ Login con "admin@medicita.ec' --" no entra
+  ✔ Búsqueda de pacientes con inyección no trae a todos
+  ✔ Inyección en filtro de fecha es rechazada
+  ✔ Inyección en filtro de médico es rechazada
+  ✔ Inyección en disponibilidad es rechazada
+  ✔ La tabla citas sigue existiendo después de los intentos
+
+Resultado: 90 pruebas pasaron, 0 fallaron.
