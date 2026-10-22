@@ -1,0 +1,99 @@
+// MediCita - Base de datos (PostgreSQL)
+// Pegar todo este texto en https://dbdiagram.io/d (panel izquierdo)
+
+Table usuarios {
+  id_usuario serial [pk]
+  correo varchar(120) [not null, unique]
+  contrasena_hash varchar(255) [not null]
+  rol varchar(20) [not null, note: 'paciente, recepcionista, medico, administrador']
+  activo boolean [not null, default: true]
+  creado_en timestamp [not null, default: `now()`]
+}
+
+Table pacientes {
+  id_paciente serial [pk]
+  id_usuario int [unique, ref: - usuarios.id_usuario]
+  cedula varchar(10) [not null, unique]
+  nombres varchar(80) [not null]
+  apellidos varchar(80) [not null]
+  celular varchar(10) [not null]
+  acepta_datos boolean [not null]
+  fecha_aceptacion timestamp [not null]
+}
+
+Table medicos {
+  id_medico serial [pk]
+  id_usuario int [not null, unique, ref: - usuarios.id_usuario]
+  nombres varchar(80) [not null]
+  apellidos varchar(80) [not null]
+  activo boolean [not null, default: true]
+}
+
+Table especialidades {
+  id_especialidad serial [pk]
+  nombre varchar(60) [not null, unique]
+  descripcion varchar(200)
+  activa boolean [not null, default: true]
+}
+
+Table medico_especialidad {
+  id_medico int [ref: > medicos.id_medico]
+  id_especialidad int [ref: > especialidades.id_especialidad]
+  indexes {
+    (id_medico, id_especialidad) [pk]
+  }
+}
+
+Table horarios {
+  id_horario serial [pk]
+  id_medico int [not null, ref: > medicos.id_medico]
+  dia_semana smallint [not null, note: '1 lunes ... 6 sabado']
+  hora_inicio time [not null]
+  hora_fin time [not null]
+  duracion_min smallint [not null]
+}
+
+Table citas {
+  id_cita serial [pk]
+  id_paciente int [not null, ref: > pacientes.id_paciente]
+  id_medico int [not null, ref: > medicos.id_medico]
+  id_especialidad int [not null, ref: > especialidades.id_especialidad]
+  fecha date [not null]
+  hora time [not null]
+  estado varchar(15) [not null, default: 'Pendiente', note: 'Pendiente, Confirmada, Cancelada, Atendida, No asistio']
+  creada_por int [not null, ref: > usuarios.id_usuario]
+  creada_en timestamp [not null, default: `now()`]
+  cancelada_en timestamp
+  Note: 'RF05: indice unico (id_medico, fecha, hora) WHERE estado <> Cancelada'
+}
+
+Table atenciones {
+  id_atencion serial [pk]
+  id_cita int [not null, unique, ref: - citas.id_cita]
+  asistio boolean [not null]
+  observaciones text
+  requiere_control boolean [not null, default: false]
+  registrada_en timestamp [not null, default: `now()`]
+}
+
+Table recordatorios {
+  id_recordatorio serial [pk]
+  id_cita int [not null, ref: > citas.id_cita]
+  canal varchar(10) [not null, note: 'correo o whatsapp']
+  estado varchar(10) [not null, note: 'enviado o fallido']
+  enviado_en timestamp
+  token_confirmacion varchar(64) [not null, unique]
+}
+
+Table historial_citas {
+  id_historial serial [pk]
+  id_cita int [not null, ref: > citas.id_cita]
+  estado_anterior varchar(15)
+  estado_nuevo varchar(15) [not null]
+  fecha_anterior date
+  hora_anterior time
+  cambiado_por int [not null, ref: > usuarios.id_usuario]
+  motivo varchar(200)
+  cambiado_en timestamp [not null, default: `now()`]
+  Note: 'Guarda cada cambio de una cita. Solo se agregan filas.'
+}
