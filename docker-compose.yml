@@ -1,0 +1,44 @@
+# Levanta todo MediCita con un solo comando: docker compose up --build
+# Luego abrir http://localhost:8080
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: medicita
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: America/Guayaquil
+    volumes:
+      - datos:/var/lib/postgresql
+      # La primera vez crea las tablas y los datos de prueba
+      - ./database/MediCita_base_de_datos.sql:/docker-entrypoint-initdb.d/01_medicita.sql:ro
+    ports:
+      - "5433:5432"
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: medicita
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      # Cambiar por una frase larga propia; con este valor el sistema usa una clave temporal
+      JWT_SECRET: cambiar-esta-clave-en-produccion
+      FRONTEND_URL: http://localhost:8080
+      TZ: America/Guayaquil
+      # Para enviar correos de verdad, completar estas variables (ver backend/env.example)
+      SMTP_HOST: ""
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  datos:
